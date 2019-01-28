@@ -1,0 +1,78 @@
+/*Ya está aplicado el reseteo Meyer*/
+
+html,body:not(header){
+    height: 100%;
+    width: 100%;
+}
+
+/****Header*****/
+
+header{
+    display:table;
+    width: 100%;
+    border-bottom: 1px solid black; 
+    border-bottom-right-radius: 20px;
+} 
+
+div#banner, div#banner~form, div#banner~section{
+    display:table-cell;
+    vertical-align: middle;
+}
+
+#banner{
+    padding: 20px 20px 20px 200px;
+    line-height: 40px;
+    margin-left: 1%;
+    background: url(../img/posibleLogo1.jpg) no-repeat left;
+    background-size: contain;
+}
+
+header > #banner > h2{
+    font-size: 40px;
+    font-weight: bolder;
+    margin-left: -50px;
+}
+
+div#banner~form{
+    margin:auto 10%;
+}
+
+#formularioBusqueda{
+
+}
+
+#formularioBusqueda>input{
+    display:block;
+    width: 100%;
+}
+
+img#iconUsuario{
+    width: 60px;
+    height: 60px;
+    display:block;
+}
+
+/**********Aside*************/
+
+#lateral{
+    float:left;
+    width: 10%;
+    display:inline-block;
+    padding:20px 60px;
+    height: 100%;
+    border-right: 1px solid black;
+}
+
+#lateral>nav>ul>li{
+    padding:20px 10px;;
+}
+
+/***** Main -- Articulos ******/
+
+main{
+    display:none;
+    float:left;
+    width: 80%;
+    
+}
+
