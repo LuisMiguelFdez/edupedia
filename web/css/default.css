@@ -1,30 +1,28 @@
 /*Ya está aplicado el reseteo Meyer*/
+@import url('https://fonts.googleapis.com/css?family=Cinzel');
 
 html,body:not(header){
-    height: 100%;
-    width: 100%;
+    height: 100vh;
+    width: 100vw;
 }
 
 /****Header*****/
 
 header{
-    display:table;
-    width: 100%;
-    border-bottom: 1px solid black; 
+    width: 100vw;
+    text-align: center;
+    border-bottom: 1px solid black;
     border-bottom-right-radius: 20px;
 } 
 
-div#banner, div#banner~form, div#banner~section{
-    display:table-cell;
-    vertical-align: middle;
-}
-
 #banner{
-    padding: 20px 20px 20px 200px;
+    display: inline-block;
+    padding: 20px 0px 20px 200px;
     line-height: 40px;
     margin-left: 1%;
     background: url(../img/posibleLogo1.jpg) no-repeat left;
     background-size: contain;
+    font-family: Cinzel;
 }
 
 header > #banner > h2{
@@ -34,19 +32,39 @@ header > #banner > h2{
 }
 
 div#banner~form{
-    margin:auto 10%;
+    width: 350px;
+    margin: auto 5%;
+    padding: 10px 0px;
+}
+
+#filtroCurso{
+    width: 146px;
+    display: inline-block;
+    padding: 2px 2px;
+}
+
+#filtroAsig{
+	width:200px;
+        display: inline-block;
+        padding: 2px 2px;
+}
+
+section,#formularioBusqueda{
+	display:inline-block;
 }
 
 #formularioBusqueda{
-
+	
 }
 
 #formularioBusqueda>input{
-    display:block;
+    display: block;
     width: 100%;
+    padding: 5px 10px;
 }
 
 img#iconUsuario{
+    margin:auto;
     width: 60px;
     height: 60px;
     display:block;
@@ -55,24 +73,27 @@ img#iconUsuario{
 /**********Aside*************/
 
 #lateral{
-    float:left;
-    width: 10%;
+    width: 200px;
+    text-align: center;
     display:inline-block;
-    padding:20px 60px;
     height: 100%;
     border-right: 1px solid black;
 }
 
 #lateral>nav>ul>li{
-    padding:20px 10px;;
+    padding:25px 10px;
+    border-bottom: 1px solid black;
 }
 
 /***** Main -- Articulos ******/
 
 main{
     display:none;
-    float:left;
     width: 80%;
     
 }
+
+/* Pruebas */
+
+ul ul {display:none;}
 

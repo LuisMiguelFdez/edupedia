@@ -52,11 +52,33 @@
         <aside id="lateral">
             <nav role="navegator">
                 <ul>
-                    <li><a href="#">Inicio</a></li>
-                    <li><a href="#">Asignaturas</a></li>
-                    <li><a href="#">Cursos</a></li>
-                    <li><a href="#">Idiomas--</a></li>
-                    <li><a href="#">Español</a></li>
+                    <li><a href="index.jsp">Inicio</a></li>
+                    <li>
+                        Cursos
+                        <ul>
+                            <c:forEach var="curso" items="${requestScope.cursos}">
+                              <li><a href="consulta?${curso.codCursos}">${curso.nombreCurso}</a></li>
+                            </c:forEach>  
+                        </ul>
+                    </li>
+                    <li>
+                        Asignaturas
+                        <ul>
+                            <c:forEach var="asig" items="${requestScope.asignaturas}">
+                                <li><a href="consulta?busqueda=${asig.codAsignatura}">${asig.nombreAsignatura}</a></li>
+                            </c:forEach>  
+                        </ul>
+                    </li>
+                    <li>
+                        Idiomas
+                        <ul>
+                            <li>Frances</li>  
+                            <li>Español</li>  
+                            <li>Inglés</li>  
+                        </ul>
+                    </li>
+                    <li><a href="contactos.jsp">Contactanos<a></li>
+                    <li><a href="descargaProyecto.jsp">Descargue el proyecto</a></li>
                 </ul>
             </nav>
         </aside>
