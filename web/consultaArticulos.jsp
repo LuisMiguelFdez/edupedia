@@ -3,7 +3,6 @@
     Created on : 21-ene-2019, 17:34:38
     Author     : lmfde
 --%>
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -16,7 +15,7 @@
         <link rel="stylesheet" href="css/widescreen.css">-->
         <link rel="stylesheet" href="css/reset meyer.css">
         <link rel="stylesheet" href="css/default.css">
-        <title>Página Principal Edupedia</title>
+        <title>Resultado de búsquedas</title>
     </head>
     <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -57,7 +56,7 @@
                         Cursos
                         <ul>
                             <c:forEach var="curso" items="${requestScope.cursos}">
-                              <li><a href="consulta?${curso.codCursos}">${curso.nombreCurso}</a></li>
+                              <li><a href="consultaArticulos.jsp?curso=${curso.codCursos}">${curso.nombreCurso}</a></li>
                             </c:forEach>  
                         </ul>
                     </li>
@@ -65,7 +64,7 @@
                         Asignaturas
                         <ul>
                             <c:forEach var="asig" items="${requestScope.asignaturas}">
-                                <li><a href="consulta?busqueda=${asig.codAsignatura}">${asig.nombreAsignatura}</a></li>
+                                <li><a href="consultaArticulos.jsp?asignatura=${asig.codAsignatura}">${asig.nombreAsignatura}</a></li>
                             </c:forEach>  
                         </ul>
                     </li>
@@ -77,13 +76,31 @@
                             <li><a href="#">Inglés</a></li>  
                         </ul>
                     </li>
-                    <li><a href="contactos.jsp">Contactanos<a></li>
+                    <li><a href="contactos.jsp">Contactanos</a></li>
                     <li><a href="descargaProyecto.jsp">Descargue el proyecto</a></li>
                 </ul>
             </nav>
         </aside>
         
         <main>
+            <jsp:include page="buscaArticulos"/>
+            <c:choose>
+                <c:when test="${!empty requestScope.articulosEncontrados && requestScope.articulosEncontrados!=null}">
+                    <h1>${requestScope.mensaje}</h1>
+                    <c:forEach var="articulo" items="${requestScope.articulosEncontrados}" varStatus="estado">
+                        <div>
+                            <h2>${articulo.titulo}</h2>
+                            <h3>Breve descripcion que no estaria de mas meterla en la base de datos</h3>
+                            <img src="img/${articulo.imagen}">
+                        </div>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <h2>No hemos encontrado ningún artículo</h2>
+                    <h3>¡Se el primero en aportar algo!</h3>
+                </c:otherwise>
+            </c:choose>
+
         </main>
         <script src="js/ajaxAsignaturas.js"></script>
     </body>

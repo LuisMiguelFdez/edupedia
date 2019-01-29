@@ -4,7 +4,7 @@
     Author     : lmfde
 --%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -27,7 +27,7 @@
                 <h2>Edupedia</h2>
                 <p>Al encuentro del saber</p>
             </div>
-            <form action="#" method="GET" id="formularioBusqueda">
+            <form action="consultaArticulos.jsp" method="GET" id="formularioBusqueda">
                 <input type="search" name="busqueda" placeholder="Búsqueda" role="search">
                 <select name="filtroCurso" id="filtroCurso">
                     <option value="0">Todos los cursos</option>
@@ -57,7 +57,7 @@
                         Cursos
                         <ul>
                             <c:forEach var="curso" items="${requestScope.cursos}">
-                              <li><a href="consulta?${curso.codCursos}">${curso.nombreCurso}</a></li>
+                              <li><a href="consultaArticulos.jsp?curso=${curso.codCursos}">${curso.nombreCurso}</a></li>
                             </c:forEach>  
                         </ul>
                     </li>
@@ -65,7 +65,7 @@
                         Asignaturas
                         <ul>
                             <c:forEach var="asig" items="${requestScope.asignaturas}">
-                                <li><a href="consulta?busqueda=${asig.codAsignatura}">${asig.nombreAsignatura}</a></li>
+                                <li><a href="consultaArticulos.jsp?asignatura=${asig.codAsignatura}">${asig.nombreAsignatura}</a></li>
                             </c:forEach>  
                         </ul>
                     </li>

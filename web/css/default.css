@@ -103,6 +103,11 @@ main article{
     width: 20%;
 }
 
+main h1{
+    font-size: 28px;
+    font-weight: bolder;
+}
+
 /* Pruebas */
 
 ul ul {
@@ -122,10 +127,6 @@ ul ul:last-child{
     top:0px;
 }
 
-ul ul:last-child>li{
-    top:0px;
-}
-
 ul ul>li{
     width: 100%;
     border: none;
@@ -134,7 +135,6 @@ ul ul>li{
 ul ul>li>a{
     display: block;
     padding: 7px 0px;
-
 }
 
 nav>ul>li:hover>ul{
@@ -146,6 +146,18 @@ nav>ul>li:hover>ul{
 
 nav>ul>li:hover>ul>li{
     transition: all 0.5s linear 0s;
-    border:1px solid black;
+    border-right:1px solid black;
+    border-top: 1px solid black;
+    background: white;
+}
+
+nav>ul>li:hover>ul>li:last-child{
+    transition: all 0.5s linear 0s;
+    border-bottom:1px solid black;
+}
+
+nav>ul>li:hover>ul>li:first-child{
+    transition: all 0.5s linear 0s;
+    border-top:none;
 }
 

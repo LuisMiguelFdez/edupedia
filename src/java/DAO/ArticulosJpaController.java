@@ -13,6 +13,7 @@ import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import DTO.Usuarios;
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -163,6 +164,36 @@ public class ArticulosJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public ArrayList<Articulos> articulosPorAsignatura(Integer codAsignatura){
+        ArrayList<Articulos> listaArticulos = null;
+        List<Articulos> todosArticulos = findArticulosEntities();
+        if(todosArticulos!=null){
+            listaArticulos=new ArrayList<Articulos>();
+            for(Articulos articulo : todosArticulos){
+                if(articulo.getAsignatura()==codAsignatura){
+                    listaArticulos.add(articulo);
+                }
+            }
+        }
+        
+        return listaArticulos;
+    }
+    
+    public ArrayList<Articulos> articulosPorCurso(Integer codCurso){
+        ArrayList<Articulos> listaArticulos = null;
+        List<Articulos> todosArticulos = findArticulosEntities();
+        if(todosArticulos!=null){
+            listaArticulos=new ArrayList<Articulos>();
+            for(Articulos articulo : todosArticulos){
+                if(articulo.getCurso()==codCurso){
+                    listaArticulos.add(articulo);
+                }
+            }
+        }
+        
+        return listaArticulos;
     }
     
 }

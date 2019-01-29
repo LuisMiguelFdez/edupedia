@@ -46,13 +46,12 @@ public class cambiaAsignaturas extends HttpServlet {
         String consulta="";
         JSONObject obj = new JSONObject();
         
-        if (codCurso!=null && codCurso!="0"){
+        if (codCurso!=null && Integer.parseInt(codCurso)!=0){
             consulta ="select * from asignaturas where COD_ASIGNATURA "
                     + "IN (Select COD_ASIGNATURA from asignaturas_por_cursos where cod_curso ="+Integer.parseInt(codCurso)+")";
         }
         else{
-            consulta ="select * from asignaturas where COD_ASIGNATURA "
-                    + "IN (Select COD_ASIGNATURA from asignaturas_por_cursos)";
+            consulta ="select * from asignaturas where COD_ASIGNATURA ";
         }
  
         try {
