@@ -15,7 +15,6 @@ $("#filtroCurso").on("change",function(){
         statusCode: {
             404:function(){alert("error en ajax");},
             500:function(){alert("error del servidor");},
-            200:function(){alert("ajax correcto");}
         }
     });
 })

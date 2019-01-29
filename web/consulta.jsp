@@ -84,23 +84,6 @@
         </aside>
         
         <main>
-            <section>
-                <article>
-                    <img src="img/imagenGenerica.jpg" alt="imagen generica">
-                    <p>Lorem ipsum dolor sit amet.....</p>
-                </article>
-                <article>
-                    <img src="img/imagenGenerica.jpg" alt="imagen generica">
-                    <p>Lorem ipsum dolor sit amet.....</p>
-                </article>
-                <article>
-                    <img src="img/imagenGenerica.jpg" alt="imagen generica">
-                    <p>Lorem ipsum dolor sit amet.....</p>
-                </article>
-            </section>
-            <article id="cargaHTML">
-                .......................................
-            </article>
         </main>
         <script src="js/ajaxAsignaturas.js"></script>
     </body>
