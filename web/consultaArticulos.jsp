@@ -93,6 +93,7 @@
                             <h3>Breve descripcion que no estaria de mas meterla en la base de datos</h3>
                             <img src="img/${articulo.imagen}">
                         </div>
+                        <hr>
                     </c:forEach>
                 </c:when>
                 <c:otherwise>

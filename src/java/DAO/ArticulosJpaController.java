@@ -196,4 +196,19 @@ public class ArticulosJpaController implements Serializable {
         return listaArticulos;
     }
     
+    public ArrayList<Articulos> articulosSinTexto(Integer codAsig,Integer codCurso){
+        ArrayList<Articulos> listaArticulos = null;
+        List<Articulos> todosArticulos = findArticulosEntities();
+        if(todosArticulos!=null){
+            listaArticulos=new ArrayList<Articulos>();
+            for(Articulos articulo : todosArticulos){
+                if(articulo.getCurso()==codCurso && articulo.getAsignatura()==codAsig){
+                    listaArticulos.add(articulo);
+                }
+            }
+        }
+        
+        return listaArticulos;
+    }
+    
 }

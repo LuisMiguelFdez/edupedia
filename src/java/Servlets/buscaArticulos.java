@@ -8,7 +8,6 @@ package Servlets;
 import DAO.ArticulosJpaController;
 import DTO.Articulos;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -62,6 +61,7 @@ public class buscaArticulos extends HttpServlet {
                 request.setAttribute("mensaje", "Mostrando artículos por asignaturas");
                 break;
             case 3: // Buscador --> curso + asignatura sin texto
+                articulos=ctrlArticulos.articulosSinTexto(Integer.parseInt(asignatura),Integer.parseInt(curso));
                 break;
             case 7: // Buscador --> curso + asignatura con texto
                 break;
