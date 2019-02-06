@@ -37,7 +37,7 @@ public class VerAportaciones extends HttpServlet {
         HttpSession session = request.getSession();
         Usuarios usu = (Usuarios) session.getAttribute("usuario");
         
-        List aportaciones = ctrArt.articulosDeUnPropietario(usu.getCodUsuario());
+        List aportaciones = ctrArt.articulosDeUnPropietario(usu);
         request.setAttribute("aportaciones", aportaciones);
     }
 
