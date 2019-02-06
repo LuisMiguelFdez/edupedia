@@ -34,6 +34,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     , @NamedQuery(name = "Articulos.findByCurso", query = "SELECT a FROM Articulos a WHERE a.curso = :curso")
     , @NamedQuery(name = "Articulos.findByTitulo", query = "SELECT a FROM Articulos a WHERE a.titulo = :titulo")
     , @NamedQuery(name = "Articulos.findByImagen", query = "SELECT a FROM Articulos a WHERE a.imagen = :imagen")
+    , @NamedQuery(name = "Articulos.findMaxId", query = "SELECT MAX( a.codArticulo ) FROM Articulos a")
+    , @NamedQuery(name = "Articulos.findByPropietario", query = "SELECT a FROM Articulos a WHERE a.propietario = :propietario")
+    , @NamedQuery(name = "Articulos.findByAsigCurso" , query = "SELECT a FROM Articulos a WHERE a.curso = :curso AND a.asignatura = :asignatura")
+    , @NamedQuery(name = "Articulos.find3Ultimos" , query = "SELECT a FROM Articulos a ORDER BY a.codArticulo DESC")
     , @NamedQuery(name = "Articulos.findByTituloImagen", query = "SELECT a FROM Articulos a WHERE a.tituloImagen = :tituloImagen")})
 public class Articulos implements Serializable {
 
@@ -60,8 +64,11 @@ public class Articulos implements Serializable {
     private String tituloImagen;
     @Basic(optional = false)
     @Lob
-    @Column(name = "CUERPO")
-    private String cuerpo;
+    @Column(name = "DESCRIPCION")
+    private String descripcion;
+    @Lob
+    @Column(name = "URL")
+    private String url;
     @JoinColumn(name = "PROPIETARIO", referencedColumnName = "COD_USUARIO")
     @ManyToOne(optional = false)
     private Usuarios propietario;
@@ -73,14 +80,26 @@ public class Articulos implements Serializable {
         this.codArticulo = codArticulo;
     }
 
-    public Articulos(Integer codArticulo, int asignatura, int curso, String titulo, String imagen, String tituloImagen, String cuerpo) {
+    public Articulos(Integer codArticulo, int asignatura, int curso, String titulo, String imagen, String tituloImagen, String descripcion) {
         this.codArticulo = codArticulo;
         this.asignatura = asignatura;
         this.curso = curso;
         this.titulo = titulo;
         this.imagen = imagen;
         this.tituloImagen = tituloImagen;
-        this.cuerpo = cuerpo;
+        this.descripcion = descripcion;
+    }
+
+    public Articulos(Integer codArticulo, int asignatura, int curso, String titulo, String imagen, String tituloImagen, String descripcion, String url, Usuarios propietario) {
+        this.codArticulo = codArticulo;
+        this.asignatura = asignatura;
+        this.curso = curso;
+        this.titulo = titulo;
+        this.imagen = imagen;
+        this.tituloImagen = tituloImagen;
+        this.descripcion = descripcion;
+        this.url = url;
+        this.propietario = propietario;
     }
 
     public Integer getCodArticulo() {
@@ -131,12 +150,20 @@ public class Articulos implements Serializable {
         this.tituloImagen = tituloImagen;
     }
 
-    public String getCuerpo() {
-        return cuerpo;
+    public String getDescripcion() {
+        return descripcion;
     }
 
-    public void setCuerpo(String cuerpo) {
-        this.cuerpo = cuerpo;
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Usuarios getPropietario() {

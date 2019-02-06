@@ -6,9 +6,8 @@
 package DTO;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,7 +18,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -50,9 +48,12 @@ public class Asignaturas implements Serializable {
         @JoinColumn(name = "COD_ASIGNATURA", referencedColumnName = "COD_ASIGNATURA")}, inverseJoinColumns = {
         @JoinColumn(name = "COD_CURSO", referencedColumnName = "COD_CURSOS")})
     @ManyToMany
-    private Collection<Cursos> cursosCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "codAsignatura")
-    private Collection<AsignaturasUsuarios> asignaturasUsuariosCollection;
+    private List<Cursos> cursosList;
+    @JoinTable(name = "asignaturas_usuarios", joinColumns = {
+        @JoinColumn(name = "COD_ASIGNATURA", referencedColumnName = "COD_ASIGNATURA")}, inverseJoinColumns = {
+        @JoinColumn(name = "COD_USUARIO", referencedColumnName = "COD_USUARIO")})
+    @ManyToMany
+    private List<Usuarios> usuariosList;
 
     public Asignaturas() {
     }
@@ -83,21 +84,21 @@ public class Asignaturas implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Cursos> getCursosCollection() {
-        return cursosCollection;
+    public List<Cursos> getCursosList() {
+        return cursosList;
     }
 
-    public void setCursosCollection(Collection<Cursos> cursosCollection) {
-        this.cursosCollection = cursosCollection;
+    public void setCursosList(List<Cursos> cursosList) {
+        this.cursosList = cursosList;
     }
 
     @XmlTransient
-    public Collection<AsignaturasUsuarios> getAsignaturasUsuariosCollection() {
-        return asignaturasUsuariosCollection;
+    public List<Usuarios> getUsuariosList() {
+        return usuariosList;
     }
 
-    public void setAsignaturasUsuariosCollection(Collection<AsignaturasUsuarios> asignaturasUsuariosCollection) {
-        this.asignaturasUsuariosCollection = asignaturasUsuariosCollection;
+    public void setUsuariosList(List<Usuarios> usuariosList) {
+        this.usuariosList = usuariosList;
     }
 
     @Override

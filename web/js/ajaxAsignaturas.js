@@ -1,3 +1,6 @@
+
+$(function(){
+  
 $("#filtroCurso").on("change",function(){
     $.ajax({
         data:"curso="+$("#filtroCurso").val(),
@@ -18,5 +21,7 @@ $("#filtroCurso").on("change",function(){
             500:function(){alert("error del servidor");}
         }
     });
+})  
 })
+
 

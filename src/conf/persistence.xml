@@ -2,12 +2,10 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="EduPedia_V.0.1PU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>DTO.Articulos</class>
-    <class>DTO.CursosUsuarios</class>
-    <class>DTO.Usuarios</class>
     <class>DTO.Asignaturas</class>
-    <class>DTO.AsignaturasUsuarios</class>
+    <class>DTO.Articulos</class>
     <class>DTO.Cursos</class>
+    <class>DTO.Usuarios</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/edupedia?zeroDateTimeBehavior=convertToNull"/>

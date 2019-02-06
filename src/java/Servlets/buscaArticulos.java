@@ -9,6 +9,7 @@ import DAO.ArticulosJpaController;
 import DTO.Articulos;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.servlet.ServletException;
@@ -33,8 +34,8 @@ public class buscaArticulos extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String curso = request.getParameter("curso");            //1
-        String asignatura = request.getParameter("asignatura");  //2
+        String curso = request.getParameter("filtroCurso");            //1
+        String asignatura = request.getParameter("filtroAsig");  //2
         String busqueda = request.getParameter("busqueda");//4
         int eleccion=0;
         /*Convertimos los posibles resultados en combinaciones* y le asignamos un numero potencia de 2*/
@@ -44,13 +45,13 @@ public class buscaArticulos extends HttpServlet {
         if(asignatura!=null){
             eleccion+=2;
         }
-        if(busqueda!=null){
+        if(busqueda!=null && !busqueda.equals("")){
             eleccion+=4;
         }
 
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("EduPedia_V.0.1PU");
         ArticulosJpaController ctrlArticulos = new ArticulosJpaController(emf);
-        ArrayList<Articulos> articulos = null;
+        List<Articulos> articulos = null;
         switch(eleccion){
             case 1: //Enlace --> solo por curso
                 articulos=ctrlArticulos.articulosPorCurso(Integer.parseInt(curso));
@@ -64,6 +65,7 @@ public class buscaArticulos extends HttpServlet {
                 articulos=ctrlArticulos.articulosSinTexto(Integer.parseInt(asignatura),Integer.parseInt(curso));
                 break;
             case 7: // Buscador --> curso + asignatura con texto
+                articulos=ctrlArticulos.articulosConTexto(Integer.parseInt(asignatura),Integer.parseInt(curso),busqueda);
                 break;
             default:
                 break;

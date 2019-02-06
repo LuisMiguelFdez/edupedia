@@ -1,0 +1,44 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 04-feb-2019, 23:14:25
+    Author     : lmfde
+*/
+
+main{
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content: space-around;
+    align-content: flex-start;
+}
+
+.novedad{
+    border: 1px solid #bcbaba;
+    border-radius: 4px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.novedad:hover>h2{
+    text-decoration: underline;
+}
+
+.novedad:hover{
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.novedad>h2{
+    font-size: 30px;
+    font-weight: bolder;
+    margin:10px 0px;
+}
+
+.novedad>img{
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+}

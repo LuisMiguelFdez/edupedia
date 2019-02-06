@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -45,7 +46,7 @@ public class ArticulosJpaController implements Serializable {
             }
             em.persist(articulos);
             if (propietario != null) {
-                propietario.getArticulosCollection().add(articulos);
+                propietario.getArticulosList().add(articulos);
                 propietario = em.merge(propietario);
             }
             em.getTransaction().commit();
@@ -70,11 +71,11 @@ public class ArticulosJpaController implements Serializable {
             }
             articulos = em.merge(articulos);
             if (propietarioOld != null && !propietarioOld.equals(propietarioNew)) {
-                propietarioOld.getArticulosCollection().remove(articulos);
+                propietarioOld.getArticulosList().remove(articulos);
                 propietarioOld = em.merge(propietarioOld);
             }
             if (propietarioNew != null && !propietarioNew.equals(propietarioOld)) {
-                propietarioNew.getArticulosCollection().add(articulos);
+                propietarioNew.getArticulosList().add(articulos);
                 propietarioNew = em.merge(propietarioNew);
             }
             em.getTransaction().commit();
@@ -108,7 +109,7 @@ public class ArticulosJpaController implements Serializable {
             }
             Usuarios propietario = articulos.getPropietario();
             if (propietario != null) {
-                propietario.getArticulosCollection().remove(articulos);
+                propietario.getArticulosList().remove(articulos);
                 propietario = em.merge(propietario);
             }
             em.remove(articulos);
@@ -166,49 +167,120 @@ public class ArticulosJpaController implements Serializable {
         }
     }
     
-    public ArrayList<Articulos> articulosPorAsignatura(Integer codAsignatura){
+    
+public List<Articulos> articulosPorAsignatura(Integer codAsignatura) {
         ArrayList<Articulos> listaArticulos = null;
         List<Articulos> todosArticulos = findArticulosEntities();
-        if(todosArticulos!=null){
-            listaArticulos=new ArrayList<Articulos>();
-            for(Articulos articulo : todosArticulos){
-                if(articulo.getAsignatura()==codAsignatura){
+        if (todosArticulos != null) {
+            listaArticulos = new ArrayList<Articulos>();
+            for (Articulos articulo : todosArticulos) {
+                if (articulo.getAsignatura() == codAsignatura) {
                     listaArticulos.add(articulo);
                 }
             }
         }
-        
+
         return listaArticulos;
+    }
+
+    public List<Articulos> articulosPorCurso(Integer codCurso) {
+        ArrayList<Articulos> listaArticulos = null;
+        List<Articulos> todosArticulos = findArticulosEntities();
+        if (todosArticulos != null) {
+            listaArticulos = new ArrayList<Articulos>();
+            for (Articulos articulo : todosArticulos) {
+                if (articulo.getCurso() == codCurso) {
+                    listaArticulos.add(articulo);
+                }
+            }
+        }
+
+        return listaArticulos;
+    }
+
+    public List<Articulos> articulosSinTexto(Integer codAsig, Integer codCurso) {
+        return articulosFiltrado(codAsig, codCurso);
+    }
+
+    public List<Articulos> articulosConTexto(Integer codAsig, Integer codCurso, String busqueda) {
+        ArrayList<Articulos> listaArticulos = null;
+        List<Articulos> todosArticulos = articulosFiltrado(codAsig, codCurso);
+        if (todosArticulos != null) {
+            listaArticulos = new ArrayList<Articulos>();
+            for (Articulos articulo : todosArticulos) {
+                String coincidencia = articulo.getDescripcion() + articulo.getTitulo() + articulo.getImagen() + articulo.getTituloImagen();
+                if (coincidencia.toLowerCase().indexOf(busqueda.toLowerCase()) > -1) {
+                    listaArticulos.add(articulo);
+                }
+            }
+        }
+        return listaArticulos;
+    }
+
+    public List<Articulos> articulosFiltrado(Integer codAsig, Integer codCurso) {
+        EntityManager em = getEntityManager();
+        TypedQuery<Articulos> articulos;
+        if (codCurso == 0) {
+            if (codAsig == 0) {
+                articulos = em.createNamedQuery("Articulos.findAll", Articulos.class);
+            } else {
+                articulos = em.createNamedQuery("Articulos.findByAsignatura", Articulos.class);
+                articulos.setParameter("asignatura", codAsig);
+            }
+        } else {
+            if (codAsig == 0) {
+                articulos = em.createNamedQuery("Articulos.findByCurso", Articulos.class);
+                articulos.setParameter("curso", codCurso);
+            } else {
+                articulos = em.createNamedQuery("Articulos.findByAsigCurso", Articulos.class);
+                articulos.setParameter("curso", codCurso);
+                articulos.setParameter("asignatura", codAsig);
+            }
+        }
+        return articulos.getResultList();
+    }
+
+    public List maxId() {
+
+        EntityManager em = getEntityManager();
+        Query consulta = em.createNamedQuery("Articulos.findMaxId");
+        return consulta.getResultList();
+
+    }
+
+    public List articulosDeUnPropietario(int valor) {
+
+        EntityManager em = getEntityManager();
+        Query consulta = em.createNamedQuery("Articulos.findByPropietario");
+        consulta.setParameter("propietario", valor);
+        return consulta.getResultList();
+
     }
     
-    public ArrayList<Articulos> articulosPorCurso(Integer codCurso){
-        ArrayList<Articulos> listaArticulos = null;
-        List<Articulos> todosArticulos = findArticulosEntities();
-        if(todosArticulos!=null){
-            listaArticulos=new ArrayList<Articulos>();
-            for(Articulos articulo : todosArticulos){
-                if(articulo.getCurso()==codCurso){
-                    listaArticulos.add(articulo);
-                }
-            }
+    public List<Articulos> ultimosArticulos() {
+        EntityManager em = getEntityManager();
+        TypedQuery<Articulos> articulos = em.createNamedQuery("Articulos.find3Ultimos",Articulos.class);
+        List<Articulos> tresUltimos = new ArrayList<Articulos>();
+        List<Articulos> todosArticulos = articulos.getResultList();
+        int cont = 0;
+        while(todosArticulos!=null && tresUltimos.size()<3){
+            tresUltimos.add(todosArticulos.get(cont));
+            cont++;
         }
-        
-        return listaArticulos;
+        return tresUltimos;
     }
+
     
-    public ArrayList<Articulos> articulosSinTexto(Integer codAsig,Integer codCurso){
-        ArrayList<Articulos> listaArticulos = null;
+    public Articulos articuloAleatorio() {
         List<Articulos> todosArticulos = findArticulosEntities();
-        if(todosArticulos!=null){
-            listaArticulos=new ArrayList<Articulos>();
-            for(Articulos articulo : todosArticulos){
-                if(articulo.getCurso()==codCurso && articulo.getAsignatura()==codAsig){
-                    listaArticulos.add(articulo);
-                }
-            }
+        Articulos articuloAleatorio=null;
+        if(todosArticulos.size()>0){
+            int numAleatorio = (int)(Math.random() * (todosArticulos.size()-1));
+            articuloAleatorio=todosArticulos.get(numAleatorio);
         }
         
-        return listaArticulos;
+        return articuloAleatorio;
     }
+
     
 }

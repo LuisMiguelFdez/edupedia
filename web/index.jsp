@@ -10,98 +10,38 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">  
-        <!--<link rel="stylesheet" href="css/smartphones.css">
-        <link rel="stylesheet" href="css/tablets.css">
-        <link rel="stylesheet" href="css/ordenadores.css.css">
-        <link rel="stylesheet" href="css/widescreen.css">-->
         <link rel="stylesheet" href="css/reset meyer.css">
         <link rel="stylesheet" href="css/default.css">
+        <link rel="stylesheet" href="css/estiloRecientes.css">
         <title>Página Principal Edupedia</title>
     </head>
     <body>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/331_jquery.min.js"><\/script>')</script>
-        <jsp:include page="cargaCombos"/>
-        <header>
-            <div id="banner" role="banner">
-                <h2>Edupedia</h2>
-                <p>Al encuentro del saber</p>
-            </div>
-            <form action="consultaArticulos.jsp" method="GET" id="formularioBusqueda">
-                <input type="search" name="busqueda" placeholder="Búsqueda" role="search">
-                <select name="filtroCurso" id="filtroCurso">
-                    <option value="0">Todos los cursos</option>
-                    <c:forEach var="curso" items="${requestScope.cursos}">
-                         <option value="${curso.codCursos}">${curso.nombreCurso}</option>
-                    </c:forEach>
-                </select>
-                <select name="filtroAsig" id="filtroAsig">
-                    <option value="0">Todas las asignaturas</option>
-                    <c:forEach var="asig" items="${requestScope.asignaturas}">
-                         <option value="${asig.codAsignatura}">${asig.nombreAsignatura}</option>
-                    </c:forEach>
-                </select>
-            </form>
-            
-            <section>
-                <img id="iconUsuario" src="img/UsuarioGenerico.png" alt="icono del usuario registrado">
-                <a href="#">Iniciar Sesión</a>
-            </section>
-        </header>
-        
-        <aside id="lateral">
-            <nav role="navegator">
-                <ul>
-                    <li><a href="index.jsp">Inicio</a></li>
-                    <li>
-                        Cursos
-                        <ul>
-                            <c:forEach var="curso" items="${requestScope.cursos}">
-                              <li><a href="consultaArticulos.jsp?curso=${curso.codCursos}">${curso.nombreCurso}</a></li>
-                            </c:forEach>  
-                        </ul>
-                    </li>
-                    <li>
-                        Asignaturas
-                        <ul>
-                            <c:forEach var="asig" items="${requestScope.asignaturas}">
-                                <li><a href="consultaArticulos.jsp?asignatura=${asig.codAsignatura}">${asig.nombreAsignatura}</a></li>
-                            </c:forEach>  
-                        </ul>
-                    </li>
-                    <li>
-                        Idiomas
-                        <ul>
-                            <li><a href="#">Frances</a></li>  
-                            <li><a href="#">Español</a></li>  
-                            <li><a href="#">Inglés</a></li>  
-                        </ul>
-                    </li>
-                    <li><a href="contactos.jsp">Contactanos<a></li>
-                    <li><a href="descargaProyecto.jsp">Descargue el proyecto</a></li>
-                </ul>
-            </nav>
-        </aside>
-        
-        <main>
-            <section>
-                <article>
-                    <img src="img/imagenGenerica.jpg" alt="imagen generica">
-                    <p>Lorem ipsum dolor sit amet.....</p>
-                </article>
-                <article>
-                    <img src="img/imagenGenerica.jpg" alt="imagen generica">
-                    <p>Lorem ipsum dolor sit amet.....</p>
-                </article>
-                <article>
-                    <img src="img/imagenGenerica.jpg" alt="imagen generica">
-                    <p>Lorem ipsum dolor sit amet.....</p>
-                </article>
-            </section>
-            <article id="cargaHTML">
-                .......................................
-            </article>
-        </main>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="js/331_jquery.min.js"><\/script>')</script>
         <script src="js/ajaxAsignaturas.js"></script>
+        <jsp:include page="cargaCombos"/>
+        <jsp:include page="PlantillasJSP/cabecera.jsp"/>
+        <div class="flex-box">
+            <jsp:include page="PlantillasJSP/asideNavegacion.jsp"/>
+            <main>
+                <jsp:include page="cargaAleatorioyRecientes"/>
+                <c:choose>
+                    <c:when test="${!empty requestScope.ultimos}">
+                        <c:forEach var="articulo" items="${requestScope.ultimos}">
+                            <div class="novedad" onclick="location.href='${articulo.url}'">
+                                <h2>${articulo.titulo}</h2>
+                                <img src="img/${articulo.imagen}" alt="${articulo.tituloImagen}">
+                            </div>
+                        </c:forEach>
+                        <div class="aleatorio">
+                            ${requestScope.articulo}
+                        </div>
+                    </c:when>
+                    <c:otherwise>
+                        <h1>No tenemos ningún articulo disponible en estos momentos, se el primero en aportar. </h1>
+                    </c:otherwise>
+                </c:choose>
+            </main>
+        </div>
     </body>
 </html>

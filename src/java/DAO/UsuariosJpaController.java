@@ -12,15 +12,15 @@ import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
-import DTO.Articulos;
+import DTO.Cursos;
 import java.util.ArrayList;
-import java.util.Collection;
-import DTO.CursosUsuarios;
-import DTO.AsignaturasUsuarios;
-import DTO.Usuarios;
 import java.util.List;
+import DTO.Asignaturas;
+import DTO.Articulos;
+import DTO.Usuarios;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.TypedQuery;
 
 /**
  *
@@ -38,63 +38,53 @@ public class UsuariosJpaController implements Serializable {
     }
 
     public void create(Usuarios usuarios) {
-        if (usuarios.getArticulosCollection() == null) {
-            usuarios.setArticulosCollection(new ArrayList<Articulos>());
+        if (usuarios.getCursosList() == null) {
+            usuarios.setCursosList(new ArrayList<Cursos>());
         }
-        if (usuarios.getCursosUsuariosCollection() == null) {
-            usuarios.setCursosUsuariosCollection(new ArrayList<CursosUsuarios>());
+        if (usuarios.getAsignaturasList() == null) {
+            usuarios.setAsignaturasList(new ArrayList<Asignaturas>());
         }
-        if (usuarios.getAsignaturasUsuariosCollection() == null) {
-            usuarios.setAsignaturasUsuariosCollection(new ArrayList<AsignaturasUsuarios>());
+        if (usuarios.getArticulosList() == null) {
+            usuarios.setArticulosList(new ArrayList<Articulos>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Articulos> attachedArticulosCollection = new ArrayList<Articulos>();
-            for (Articulos articulosCollectionArticulosToAttach : usuarios.getArticulosCollection()) {
-                articulosCollectionArticulosToAttach = em.getReference(articulosCollectionArticulosToAttach.getClass(), articulosCollectionArticulosToAttach.getCodArticulo());
-                attachedArticulosCollection.add(articulosCollectionArticulosToAttach);
+            List<Cursos> attachedCursosList = new ArrayList<Cursos>();
+            for (Cursos cursosListCursosToAttach : usuarios.getCursosList()) {
+                cursosListCursosToAttach = em.getReference(cursosListCursosToAttach.getClass(), cursosListCursosToAttach.getCodCursos());
+                attachedCursosList.add(cursosListCursosToAttach);
             }
-            usuarios.setArticulosCollection(attachedArticulosCollection);
-            Collection<CursosUsuarios> attachedCursosUsuariosCollection = new ArrayList<CursosUsuarios>();
-            for (CursosUsuarios cursosUsuariosCollectionCursosUsuariosToAttach : usuarios.getCursosUsuariosCollection()) {
-                cursosUsuariosCollectionCursosUsuariosToAttach = em.getReference(cursosUsuariosCollectionCursosUsuariosToAttach.getClass(), cursosUsuariosCollectionCursosUsuariosToAttach.getId());
-                attachedCursosUsuariosCollection.add(cursosUsuariosCollectionCursosUsuariosToAttach);
+            usuarios.setCursosList(attachedCursosList);
+            List<Asignaturas> attachedAsignaturasList = new ArrayList<Asignaturas>();
+            for (Asignaturas asignaturasListAsignaturasToAttach : usuarios.getAsignaturasList()) {
+                asignaturasListAsignaturasToAttach = em.getReference(asignaturasListAsignaturasToAttach.getClass(), asignaturasListAsignaturasToAttach.getCodAsignatura());
+                attachedAsignaturasList.add(asignaturasListAsignaturasToAttach);
             }
-            usuarios.setCursosUsuariosCollection(attachedCursosUsuariosCollection);
-            Collection<AsignaturasUsuarios> attachedAsignaturasUsuariosCollection = new ArrayList<AsignaturasUsuarios>();
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionAsignaturasUsuariosToAttach : usuarios.getAsignaturasUsuariosCollection()) {
-                asignaturasUsuariosCollectionAsignaturasUsuariosToAttach = em.getReference(asignaturasUsuariosCollectionAsignaturasUsuariosToAttach.getClass(), asignaturasUsuariosCollectionAsignaturasUsuariosToAttach.getId());
-                attachedAsignaturasUsuariosCollection.add(asignaturasUsuariosCollectionAsignaturasUsuariosToAttach);
+            usuarios.setAsignaturasList(attachedAsignaturasList);
+            List<Articulos> attachedArticulosList = new ArrayList<Articulos>();
+            for (Articulos articulosListArticulosToAttach : usuarios.getArticulosList()) {
+                articulosListArticulosToAttach = em.getReference(articulosListArticulosToAttach.getClass(), articulosListArticulosToAttach.getCodArticulo());
+                attachedArticulosList.add(articulosListArticulosToAttach);
             }
-            usuarios.setAsignaturasUsuariosCollection(attachedAsignaturasUsuariosCollection);
+            usuarios.setArticulosList(attachedArticulosList);
             em.persist(usuarios);
-            for (Articulos articulosCollectionArticulos : usuarios.getArticulosCollection()) {
-                Usuarios oldPropietarioOfArticulosCollectionArticulos = articulosCollectionArticulos.getPropietario();
-                articulosCollectionArticulos.setPropietario(usuarios);
-                articulosCollectionArticulos = em.merge(articulosCollectionArticulos);
-                if (oldPropietarioOfArticulosCollectionArticulos != null) {
-                    oldPropietarioOfArticulosCollectionArticulos.getArticulosCollection().remove(articulosCollectionArticulos);
-                    oldPropietarioOfArticulosCollectionArticulos = em.merge(oldPropietarioOfArticulosCollectionArticulos);
-                }
+            for (Cursos cursosListCursos : usuarios.getCursosList()) {
+                cursosListCursos.getUsuariosList().add(usuarios);
+                cursosListCursos = em.merge(cursosListCursos);
             }
-            for (CursosUsuarios cursosUsuariosCollectionCursosUsuarios : usuarios.getCursosUsuariosCollection()) {
-                Usuarios oldCodUsuarioOfCursosUsuariosCollectionCursosUsuarios = cursosUsuariosCollectionCursosUsuarios.getCodUsuario();
-                cursosUsuariosCollectionCursosUsuarios.setCodUsuario(usuarios);
-                cursosUsuariosCollectionCursosUsuarios = em.merge(cursosUsuariosCollectionCursosUsuarios);
-                if (oldCodUsuarioOfCursosUsuariosCollectionCursosUsuarios != null) {
-                    oldCodUsuarioOfCursosUsuariosCollectionCursosUsuarios.getCursosUsuariosCollection().remove(cursosUsuariosCollectionCursosUsuarios);
-                    oldCodUsuarioOfCursosUsuariosCollectionCursosUsuarios = em.merge(oldCodUsuarioOfCursosUsuariosCollectionCursosUsuarios);
-                }
+            for (Asignaturas asignaturasListAsignaturas : usuarios.getAsignaturasList()) {
+                asignaturasListAsignaturas.getUsuariosList().add(usuarios);
+                asignaturasListAsignaturas = em.merge(asignaturasListAsignaturas);
             }
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionAsignaturasUsuarios : usuarios.getAsignaturasUsuariosCollection()) {
-                Usuarios oldCodUsuarioOfAsignaturasUsuariosCollectionAsignaturasUsuarios = asignaturasUsuariosCollectionAsignaturasUsuarios.getCodUsuario();
-                asignaturasUsuariosCollectionAsignaturasUsuarios.setCodUsuario(usuarios);
-                asignaturasUsuariosCollectionAsignaturasUsuarios = em.merge(asignaturasUsuariosCollectionAsignaturasUsuarios);
-                if (oldCodUsuarioOfAsignaturasUsuariosCollectionAsignaturasUsuarios != null) {
-                    oldCodUsuarioOfAsignaturasUsuariosCollectionAsignaturasUsuarios.getAsignaturasUsuariosCollection().remove(asignaturasUsuariosCollectionAsignaturasUsuarios);
-                    oldCodUsuarioOfAsignaturasUsuariosCollectionAsignaturasUsuarios = em.merge(oldCodUsuarioOfAsignaturasUsuariosCollectionAsignaturasUsuarios);
+            for (Articulos articulosListArticulos : usuarios.getArticulosList()) {
+                Usuarios oldPropietarioOfArticulosListArticulos = articulosListArticulos.getPropietario();
+                articulosListArticulos.setPropietario(usuarios);
+                articulosListArticulos = em.merge(articulosListArticulos);
+                if (oldPropietarioOfArticulosListArticulos != null) {
+                    oldPropietarioOfArticulosListArticulos.getArticulosList().remove(articulosListArticulos);
+                    oldPropietarioOfArticulosListArticulos = em.merge(oldPropietarioOfArticulosListArticulos);
                 }
             }
             em.getTransaction().commit();
@@ -111,92 +101,78 @@ public class UsuariosJpaController implements Serializable {
             em = getEntityManager();
             em.getTransaction().begin();
             Usuarios persistentUsuarios = em.find(Usuarios.class, usuarios.getCodUsuario());
-            Collection<Articulos> articulosCollectionOld = persistentUsuarios.getArticulosCollection();
-            Collection<Articulos> articulosCollectionNew = usuarios.getArticulosCollection();
-            Collection<CursosUsuarios> cursosUsuariosCollectionOld = persistentUsuarios.getCursosUsuariosCollection();
-            Collection<CursosUsuarios> cursosUsuariosCollectionNew = usuarios.getCursosUsuariosCollection();
-            Collection<AsignaturasUsuarios> asignaturasUsuariosCollectionOld = persistentUsuarios.getAsignaturasUsuariosCollection();
-            Collection<AsignaturasUsuarios> asignaturasUsuariosCollectionNew = usuarios.getAsignaturasUsuariosCollection();
+            List<Cursos> cursosListOld = persistentUsuarios.getCursosList();
+            List<Cursos> cursosListNew = usuarios.getCursosList();
+            List<Asignaturas> asignaturasListOld = persistentUsuarios.getAsignaturasList();
+            List<Asignaturas> asignaturasListNew = usuarios.getAsignaturasList();
+            List<Articulos> articulosListOld = persistentUsuarios.getArticulosList();
+            List<Articulos> articulosListNew = usuarios.getArticulosList();
             List<String> illegalOrphanMessages = null;
-            for (Articulos articulosCollectionOldArticulos : articulosCollectionOld) {
-                if (!articulosCollectionNew.contains(articulosCollectionOldArticulos)) {
+            for (Articulos articulosListOldArticulos : articulosListOld) {
+                if (!articulosListNew.contains(articulosListOldArticulos)) {
                     if (illegalOrphanMessages == null) {
                         illegalOrphanMessages = new ArrayList<String>();
                     }
-                    illegalOrphanMessages.add("You must retain Articulos " + articulosCollectionOldArticulos + " since its propietario field is not nullable.");
-                }
-            }
-            for (CursosUsuarios cursosUsuariosCollectionOldCursosUsuarios : cursosUsuariosCollectionOld) {
-                if (!cursosUsuariosCollectionNew.contains(cursosUsuariosCollectionOldCursosUsuarios)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain CursosUsuarios " + cursosUsuariosCollectionOldCursosUsuarios + " since its codUsuario field is not nullable.");
-                }
-            }
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionOldAsignaturasUsuarios : asignaturasUsuariosCollectionOld) {
-                if (!asignaturasUsuariosCollectionNew.contains(asignaturasUsuariosCollectionOldAsignaturasUsuarios)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain AsignaturasUsuarios " + asignaturasUsuariosCollectionOldAsignaturasUsuarios + " since its codUsuario field is not nullable.");
+                    illegalOrphanMessages.add("You must retain Articulos " + articulosListOldArticulos + " since its propietario field is not nullable.");
                 }
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
             }
-            Collection<Articulos> attachedArticulosCollectionNew = new ArrayList<Articulos>();
-            for (Articulos articulosCollectionNewArticulosToAttach : articulosCollectionNew) {
-                articulosCollectionNewArticulosToAttach = em.getReference(articulosCollectionNewArticulosToAttach.getClass(), articulosCollectionNewArticulosToAttach.getCodArticulo());
-                attachedArticulosCollectionNew.add(articulosCollectionNewArticulosToAttach);
+            List<Cursos> attachedCursosListNew = new ArrayList<Cursos>();
+            for (Cursos cursosListNewCursosToAttach : cursosListNew) {
+                cursosListNewCursosToAttach = em.getReference(cursosListNewCursosToAttach.getClass(), cursosListNewCursosToAttach.getCodCursos());
+                attachedCursosListNew.add(cursosListNewCursosToAttach);
             }
-            articulosCollectionNew = attachedArticulosCollectionNew;
-            usuarios.setArticulosCollection(articulosCollectionNew);
-            Collection<CursosUsuarios> attachedCursosUsuariosCollectionNew = new ArrayList<CursosUsuarios>();
-            for (CursosUsuarios cursosUsuariosCollectionNewCursosUsuariosToAttach : cursosUsuariosCollectionNew) {
-                cursosUsuariosCollectionNewCursosUsuariosToAttach = em.getReference(cursosUsuariosCollectionNewCursosUsuariosToAttach.getClass(), cursosUsuariosCollectionNewCursosUsuariosToAttach.getId());
-                attachedCursosUsuariosCollectionNew.add(cursosUsuariosCollectionNewCursosUsuariosToAttach);
+            cursosListNew = attachedCursosListNew;
+            usuarios.setCursosList(cursosListNew);
+            List<Asignaturas> attachedAsignaturasListNew = new ArrayList<Asignaturas>();
+            for (Asignaturas asignaturasListNewAsignaturasToAttach : asignaturasListNew) {
+                asignaturasListNewAsignaturasToAttach = em.getReference(asignaturasListNewAsignaturasToAttach.getClass(), asignaturasListNewAsignaturasToAttach.getCodAsignatura());
+                attachedAsignaturasListNew.add(asignaturasListNewAsignaturasToAttach);
             }
-            cursosUsuariosCollectionNew = attachedCursosUsuariosCollectionNew;
-            usuarios.setCursosUsuariosCollection(cursosUsuariosCollectionNew);
-            Collection<AsignaturasUsuarios> attachedAsignaturasUsuariosCollectionNew = new ArrayList<AsignaturasUsuarios>();
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach : asignaturasUsuariosCollectionNew) {
-                asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach = em.getReference(asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach.getClass(), asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach.getId());
-                attachedAsignaturasUsuariosCollectionNew.add(asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach);
+            asignaturasListNew = attachedAsignaturasListNew;
+            usuarios.setAsignaturasList(asignaturasListNew);
+            List<Articulos> attachedArticulosListNew = new ArrayList<Articulos>();
+            for (Articulos articulosListNewArticulosToAttach : articulosListNew) {
+                articulosListNewArticulosToAttach = em.getReference(articulosListNewArticulosToAttach.getClass(), articulosListNewArticulosToAttach.getCodArticulo());
+                attachedArticulosListNew.add(articulosListNewArticulosToAttach);
             }
-            asignaturasUsuariosCollectionNew = attachedAsignaturasUsuariosCollectionNew;
-            usuarios.setAsignaturasUsuariosCollection(asignaturasUsuariosCollectionNew);
+            articulosListNew = attachedArticulosListNew;
+            usuarios.setArticulosList(articulosListNew);
             usuarios = em.merge(usuarios);
-            for (Articulos articulosCollectionNewArticulos : articulosCollectionNew) {
-                if (!articulosCollectionOld.contains(articulosCollectionNewArticulos)) {
-                    Usuarios oldPropietarioOfArticulosCollectionNewArticulos = articulosCollectionNewArticulos.getPropietario();
-                    articulosCollectionNewArticulos.setPropietario(usuarios);
-                    articulosCollectionNewArticulos = em.merge(articulosCollectionNewArticulos);
-                    if (oldPropietarioOfArticulosCollectionNewArticulos != null && !oldPropietarioOfArticulosCollectionNewArticulos.equals(usuarios)) {
-                        oldPropietarioOfArticulosCollectionNewArticulos.getArticulosCollection().remove(articulosCollectionNewArticulos);
-                        oldPropietarioOfArticulosCollectionNewArticulos = em.merge(oldPropietarioOfArticulosCollectionNewArticulos);
-                    }
+            for (Cursos cursosListOldCursos : cursosListOld) {
+                if (!cursosListNew.contains(cursosListOldCursos)) {
+                    cursosListOldCursos.getUsuariosList().remove(usuarios);
+                    cursosListOldCursos = em.merge(cursosListOldCursos);
                 }
             }
-            for (CursosUsuarios cursosUsuariosCollectionNewCursosUsuarios : cursosUsuariosCollectionNew) {
-                if (!cursosUsuariosCollectionOld.contains(cursosUsuariosCollectionNewCursosUsuarios)) {
-                    Usuarios oldCodUsuarioOfCursosUsuariosCollectionNewCursosUsuarios = cursosUsuariosCollectionNewCursosUsuarios.getCodUsuario();
-                    cursosUsuariosCollectionNewCursosUsuarios.setCodUsuario(usuarios);
-                    cursosUsuariosCollectionNewCursosUsuarios = em.merge(cursosUsuariosCollectionNewCursosUsuarios);
-                    if (oldCodUsuarioOfCursosUsuariosCollectionNewCursosUsuarios != null && !oldCodUsuarioOfCursosUsuariosCollectionNewCursosUsuarios.equals(usuarios)) {
-                        oldCodUsuarioOfCursosUsuariosCollectionNewCursosUsuarios.getCursosUsuariosCollection().remove(cursosUsuariosCollectionNewCursosUsuarios);
-                        oldCodUsuarioOfCursosUsuariosCollectionNewCursosUsuarios = em.merge(oldCodUsuarioOfCursosUsuariosCollectionNewCursosUsuarios);
-                    }
+            for (Cursos cursosListNewCursos : cursosListNew) {
+                if (!cursosListOld.contains(cursosListNewCursos)) {
+                    cursosListNewCursos.getUsuariosList().add(usuarios);
+                    cursosListNewCursos = em.merge(cursosListNewCursos);
                 }
             }
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionNewAsignaturasUsuarios : asignaturasUsuariosCollectionNew) {
-                if (!asignaturasUsuariosCollectionOld.contains(asignaturasUsuariosCollectionNewAsignaturasUsuarios)) {
-                    Usuarios oldCodUsuarioOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios = asignaturasUsuariosCollectionNewAsignaturasUsuarios.getCodUsuario();
-                    asignaturasUsuariosCollectionNewAsignaturasUsuarios.setCodUsuario(usuarios);
-                    asignaturasUsuariosCollectionNewAsignaturasUsuarios = em.merge(asignaturasUsuariosCollectionNewAsignaturasUsuarios);
-                    if (oldCodUsuarioOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios != null && !oldCodUsuarioOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios.equals(usuarios)) {
-                        oldCodUsuarioOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios.getAsignaturasUsuariosCollection().remove(asignaturasUsuariosCollectionNewAsignaturasUsuarios);
-                        oldCodUsuarioOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios = em.merge(oldCodUsuarioOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios);
+            for (Asignaturas asignaturasListOldAsignaturas : asignaturasListOld) {
+                if (!asignaturasListNew.contains(asignaturasListOldAsignaturas)) {
+                    asignaturasListOldAsignaturas.getUsuariosList().remove(usuarios);
+                    asignaturasListOldAsignaturas = em.merge(asignaturasListOldAsignaturas);
+                }
+            }
+            for (Asignaturas asignaturasListNewAsignaturas : asignaturasListNew) {
+                if (!asignaturasListOld.contains(asignaturasListNewAsignaturas)) {
+                    asignaturasListNewAsignaturas.getUsuariosList().add(usuarios);
+                    asignaturasListNewAsignaturas = em.merge(asignaturasListNewAsignaturas);
+                }
+            }
+            for (Articulos articulosListNewArticulos : articulosListNew) {
+                if (!articulosListOld.contains(articulosListNewArticulos)) {
+                    Usuarios oldPropietarioOfArticulosListNewArticulos = articulosListNewArticulos.getPropietario();
+                    articulosListNewArticulos.setPropietario(usuarios);
+                    articulosListNewArticulos = em.merge(articulosListNewArticulos);
+                    if (oldPropietarioOfArticulosListNewArticulos != null && !oldPropietarioOfArticulosListNewArticulos.equals(usuarios)) {
+                        oldPropietarioOfArticulosListNewArticulos.getArticulosList().remove(articulosListNewArticulos);
+                        oldPropietarioOfArticulosListNewArticulos = em.merge(oldPropietarioOfArticulosListNewArticulos);
                     }
                 }
             }
@@ -230,29 +206,25 @@ public class UsuariosJpaController implements Serializable {
                 throw new NonexistentEntityException("The usuarios with id " + id + " no longer exists.", enfe);
             }
             List<String> illegalOrphanMessages = null;
-            Collection<Articulos> articulosCollectionOrphanCheck = usuarios.getArticulosCollection();
-            for (Articulos articulosCollectionOrphanCheckArticulos : articulosCollectionOrphanCheck) {
+            List<Articulos> articulosListOrphanCheck = usuarios.getArticulosList();
+            for (Articulos articulosListOrphanCheckArticulos : articulosListOrphanCheck) {
                 if (illegalOrphanMessages == null) {
                     illegalOrphanMessages = new ArrayList<String>();
                 }
-                illegalOrphanMessages.add("This Usuarios (" + usuarios + ") cannot be destroyed since the Articulos " + articulosCollectionOrphanCheckArticulos + " in its articulosCollection field has a non-nullable propietario field.");
-            }
-            Collection<CursosUsuarios> cursosUsuariosCollectionOrphanCheck = usuarios.getCursosUsuariosCollection();
-            for (CursosUsuarios cursosUsuariosCollectionOrphanCheckCursosUsuarios : cursosUsuariosCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Usuarios (" + usuarios + ") cannot be destroyed since the CursosUsuarios " + cursosUsuariosCollectionOrphanCheckCursosUsuarios + " in its cursosUsuariosCollection field has a non-nullable codUsuario field.");
-            }
-            Collection<AsignaturasUsuarios> asignaturasUsuariosCollectionOrphanCheck = usuarios.getAsignaturasUsuariosCollection();
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionOrphanCheckAsignaturasUsuarios : asignaturasUsuariosCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Usuarios (" + usuarios + ") cannot be destroyed since the AsignaturasUsuarios " + asignaturasUsuariosCollectionOrphanCheckAsignaturasUsuarios + " in its asignaturasUsuariosCollection field has a non-nullable codUsuario field.");
+                illegalOrphanMessages.add("This Usuarios (" + usuarios + ") cannot be destroyed since the Articulos " + articulosListOrphanCheckArticulos + " in its articulosList field has a non-nullable propietario field.");
             }
             if (illegalOrphanMessages != null) {
                 throw new IllegalOrphanException(illegalOrphanMessages);
+            }
+            List<Cursos> cursosList = usuarios.getCursosList();
+            for (Cursos cursosListCursos : cursosList) {
+                cursosListCursos.getUsuariosList().remove(usuarios);
+                cursosListCursos = em.merge(cursosListCursos);
+            }
+            List<Asignaturas> asignaturasList = usuarios.getAsignaturasList();
+            for (Asignaturas asignaturasListAsignaturas : asignaturasList) {
+                asignaturasListAsignaturas.getUsuariosList().remove(usuarios);
+                asignaturasListAsignaturas = em.merge(asignaturasListAsignaturas);
             }
             em.remove(usuarios);
             em.getTransaction().commit();
@@ -307,6 +279,15 @@ public class UsuariosJpaController implements Serializable {
         } finally {
             em.close();
         }
+    }
+    
+    public List usuarioPorEmail(String valor) {
+        
+        EntityManager em = getEntityManager();
+        TypedQuery<Usuarios> consulta = em.createNamedQuery("Usuarios.findByEmail", Usuarios.class);
+        consulta.setParameter("email", valor);
+        return consulta.getResultList();
+
     }
     
 }

@@ -6,7 +6,7 @@
 package DTO;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,6 +14,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -35,6 +36,7 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "Usuarios.findByPassword", query = "SELECT u FROM Usuarios u WHERE u.password = :password")
     , @NamedQuery(name = "Usuarios.findByApellidos", query = "SELECT u FROM Usuarios u WHERE u.apellidos = :apellidos")
     , @NamedQuery(name = "Usuarios.findByEmail", query = "SELECT u FROM Usuarios u WHERE u.email = :email")
+    , @NamedQuery(name = "Usuarios.findByFotoperfil", query = "SELECT u FROM Usuarios u WHERE u.fotoperfil = :fotoperfil")
     , @NamedQuery(name = "Usuarios.findByRol", query = "SELECT u FROM Usuarios u WHERE u.rol = :rol")})
 public class Usuarios implements Serializable {
 
@@ -55,15 +57,17 @@ public class Usuarios implements Serializable {
     @Basic(optional = false)
     @Column(name = "EMAIL")
     private String email;
+    @Column(name = "FOTOPERFIL")
+    private String fotoperfil;
     @Basic(optional = false)
     @Column(name = "ROL")
     private String rol;
+    @ManyToMany(mappedBy = "usuariosList")
+    private List<Cursos> cursosList;
+    @ManyToMany(mappedBy = "usuariosList")
+    private List<Asignaturas> asignaturasList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "propietario")
-    private Collection<Articulos> articulosCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "codUsuario")
-    private Collection<CursosUsuarios> cursosUsuariosCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "codUsuario")
-    private Collection<AsignaturasUsuarios> asignaturasUsuariosCollection;
+    private List<Articulos> articulosList;
 
     public Usuarios() {
     }
@@ -120,6 +124,14 @@ public class Usuarios implements Serializable {
         this.email = email;
     }
 
+    public String getFotoperfil() {
+        return fotoperfil;
+    }
+
+    public void setFotoperfil(String fotoperfil) {
+        this.fotoperfil = fotoperfil;
+    }
+
     public String getRol() {
         return rol;
     }
@@ -129,30 +141,30 @@ public class Usuarios implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Articulos> getArticulosCollection() {
-        return articulosCollection;
+    public List<Cursos> getCursosList() {
+        return cursosList;
     }
 
-    public void setArticulosCollection(Collection<Articulos> articulosCollection) {
-        this.articulosCollection = articulosCollection;
-    }
-
-    @XmlTransient
-    public Collection<CursosUsuarios> getCursosUsuariosCollection() {
-        return cursosUsuariosCollection;
-    }
-
-    public void setCursosUsuariosCollection(Collection<CursosUsuarios> cursosUsuariosCollection) {
-        this.cursosUsuariosCollection = cursosUsuariosCollection;
+    public void setCursosList(List<Cursos> cursosList) {
+        this.cursosList = cursosList;
     }
 
     @XmlTransient
-    public Collection<AsignaturasUsuarios> getAsignaturasUsuariosCollection() {
-        return asignaturasUsuariosCollection;
+    public List<Asignaturas> getAsignaturasList() {
+        return asignaturasList;
     }
 
-    public void setAsignaturasUsuariosCollection(Collection<AsignaturasUsuarios> asignaturasUsuariosCollection) {
-        this.asignaturasUsuariosCollection = asignaturasUsuariosCollection;
+    public void setAsignaturasList(List<Asignaturas> asignaturasList) {
+        this.asignaturasList = asignaturasList;
+    }
+
+    @XmlTransient
+    public List<Articulos> getArticulosList() {
+        return articulosList;
+    }
+
+    public void setArticulosList(List<Articulos> articulosList) {
+        this.articulosList = articulosList;
     }
 
     @Override

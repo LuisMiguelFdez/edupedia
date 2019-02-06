@@ -5,7 +5,6 @@
  */
 package DAO;
 
-import DAO.exceptions.IllegalOrphanException;
 import DAO.exceptions.NonexistentEntityException;
 import DTO.Asignaturas;
 import java.io.Serializable;
@@ -15,9 +14,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import DTO.Cursos;
 import java.util.ArrayList;
-import java.util.Collection;
-import DTO.AsignaturasUsuarios;
 import java.util.List;
+import DTO.Usuarios;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 
@@ -37,41 +35,36 @@ public class AsignaturasJpaController implements Serializable {
     }
 
     public void create(Asignaturas asignaturas) {
-        if (asignaturas.getCursosCollection() == null) {
-            asignaturas.setCursosCollection(new ArrayList<Cursos>());
+        if (asignaturas.getCursosList() == null) {
+            asignaturas.setCursosList(new ArrayList<Cursos>());
         }
-        if (asignaturas.getAsignaturasUsuariosCollection() == null) {
-            asignaturas.setAsignaturasUsuariosCollection(new ArrayList<AsignaturasUsuarios>());
+        if (asignaturas.getUsuariosList() == null) {
+            asignaturas.setUsuariosList(new ArrayList<Usuarios>());
         }
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Collection<Cursos> attachedCursosCollection = new ArrayList<Cursos>();
-            for (Cursos cursosCollectionCursosToAttach : asignaturas.getCursosCollection()) {
-                cursosCollectionCursosToAttach = em.getReference(cursosCollectionCursosToAttach.getClass(), cursosCollectionCursosToAttach.getCodCursos());
-                attachedCursosCollection.add(cursosCollectionCursosToAttach);
+            List<Cursos> attachedCursosList = new ArrayList<Cursos>();
+            for (Cursos cursosListCursosToAttach : asignaturas.getCursosList()) {
+                cursosListCursosToAttach = em.getReference(cursosListCursosToAttach.getClass(), cursosListCursosToAttach.getCodCursos());
+                attachedCursosList.add(cursosListCursosToAttach);
             }
-            asignaturas.setCursosCollection(attachedCursosCollection);
-            Collection<AsignaturasUsuarios> attachedAsignaturasUsuariosCollection = new ArrayList<AsignaturasUsuarios>();
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionAsignaturasUsuariosToAttach : asignaturas.getAsignaturasUsuariosCollection()) {
-                asignaturasUsuariosCollectionAsignaturasUsuariosToAttach = em.getReference(asignaturasUsuariosCollectionAsignaturasUsuariosToAttach.getClass(), asignaturasUsuariosCollectionAsignaturasUsuariosToAttach.getId());
-                attachedAsignaturasUsuariosCollection.add(asignaturasUsuariosCollectionAsignaturasUsuariosToAttach);
+            asignaturas.setCursosList(attachedCursosList);
+            List<Usuarios> attachedUsuariosList = new ArrayList<Usuarios>();
+            for (Usuarios usuariosListUsuariosToAttach : asignaturas.getUsuariosList()) {
+                usuariosListUsuariosToAttach = em.getReference(usuariosListUsuariosToAttach.getClass(), usuariosListUsuariosToAttach.getCodUsuario());
+                attachedUsuariosList.add(usuariosListUsuariosToAttach);
             }
-            asignaturas.setAsignaturasUsuariosCollection(attachedAsignaturasUsuariosCollection);
+            asignaturas.setUsuariosList(attachedUsuariosList);
             em.persist(asignaturas);
-            for (Cursos cursosCollectionCursos : asignaturas.getCursosCollection()) {
-                cursosCollectionCursos.getAsignaturasCollection().add(asignaturas);
-                cursosCollectionCursos = em.merge(cursosCollectionCursos);
+            for (Cursos cursosListCursos : asignaturas.getCursosList()) {
+                cursosListCursos.getAsignaturasList().add(asignaturas);
+                cursosListCursos = em.merge(cursosListCursos);
             }
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionAsignaturasUsuarios : asignaturas.getAsignaturasUsuariosCollection()) {
-                Asignaturas oldCodAsignaturaOfAsignaturasUsuariosCollectionAsignaturasUsuarios = asignaturasUsuariosCollectionAsignaturasUsuarios.getCodAsignatura();
-                asignaturasUsuariosCollectionAsignaturasUsuarios.setCodAsignatura(asignaturas);
-                asignaturasUsuariosCollectionAsignaturasUsuarios = em.merge(asignaturasUsuariosCollectionAsignaturasUsuarios);
-                if (oldCodAsignaturaOfAsignaturasUsuariosCollectionAsignaturasUsuarios != null) {
-                    oldCodAsignaturaOfAsignaturasUsuariosCollectionAsignaturasUsuarios.getAsignaturasUsuariosCollection().remove(asignaturasUsuariosCollectionAsignaturasUsuarios);
-                    oldCodAsignaturaOfAsignaturasUsuariosCollectionAsignaturasUsuarios = em.merge(oldCodAsignaturaOfAsignaturasUsuariosCollectionAsignaturasUsuarios);
-                }
+            for (Usuarios usuariosListUsuarios : asignaturas.getUsuariosList()) {
+                usuariosListUsuarios.getAsignaturasList().add(asignaturas);
+                usuariosListUsuarios = em.merge(usuariosListUsuarios);
             }
             em.getTransaction().commit();
         } finally {
@@ -81,64 +74,53 @@ public class AsignaturasJpaController implements Serializable {
         }
     }
 
-    public void edit(Asignaturas asignaturas) throws IllegalOrphanException, NonexistentEntityException, Exception {
+    public void edit(Asignaturas asignaturas) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             Asignaturas persistentAsignaturas = em.find(Asignaturas.class, asignaturas.getCodAsignatura());
-            Collection<Cursos> cursosCollectionOld = persistentAsignaturas.getCursosCollection();
-            Collection<Cursos> cursosCollectionNew = asignaturas.getCursosCollection();
-            Collection<AsignaturasUsuarios> asignaturasUsuariosCollectionOld = persistentAsignaturas.getAsignaturasUsuariosCollection();
-            Collection<AsignaturasUsuarios> asignaturasUsuariosCollectionNew = asignaturas.getAsignaturasUsuariosCollection();
-            List<String> illegalOrphanMessages = null;
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionOldAsignaturasUsuarios : asignaturasUsuariosCollectionOld) {
-                if (!asignaturasUsuariosCollectionNew.contains(asignaturasUsuariosCollectionOldAsignaturasUsuarios)) {
-                    if (illegalOrphanMessages == null) {
-                        illegalOrphanMessages = new ArrayList<String>();
-                    }
-                    illegalOrphanMessages.add("You must retain AsignaturasUsuarios " + asignaturasUsuariosCollectionOldAsignaturasUsuarios + " since its codAsignatura field is not nullable.");
-                }
+            List<Cursos> cursosListOld = persistentAsignaturas.getCursosList();
+            List<Cursos> cursosListNew = asignaturas.getCursosList();
+            List<Usuarios> usuariosListOld = persistentAsignaturas.getUsuariosList();
+            List<Usuarios> usuariosListNew = asignaturas.getUsuariosList();
+            List<Cursos> attachedCursosListNew = new ArrayList<Cursos>();
+            for (Cursos cursosListNewCursosToAttach : cursosListNew) {
+                cursosListNewCursosToAttach = em.getReference(cursosListNewCursosToAttach.getClass(), cursosListNewCursosToAttach.getCodCursos());
+                attachedCursosListNew.add(cursosListNewCursosToAttach);
             }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
+            cursosListNew = attachedCursosListNew;
+            asignaturas.setCursosList(cursosListNew);
+            List<Usuarios> attachedUsuariosListNew = new ArrayList<Usuarios>();
+            for (Usuarios usuariosListNewUsuariosToAttach : usuariosListNew) {
+                usuariosListNewUsuariosToAttach = em.getReference(usuariosListNewUsuariosToAttach.getClass(), usuariosListNewUsuariosToAttach.getCodUsuario());
+                attachedUsuariosListNew.add(usuariosListNewUsuariosToAttach);
             }
-            Collection<Cursos> attachedCursosCollectionNew = new ArrayList<Cursos>();
-            for (Cursos cursosCollectionNewCursosToAttach : cursosCollectionNew) {
-                cursosCollectionNewCursosToAttach = em.getReference(cursosCollectionNewCursosToAttach.getClass(), cursosCollectionNewCursosToAttach.getCodCursos());
-                attachedCursosCollectionNew.add(cursosCollectionNewCursosToAttach);
-            }
-            cursosCollectionNew = attachedCursosCollectionNew;
-            asignaturas.setCursosCollection(cursosCollectionNew);
-            Collection<AsignaturasUsuarios> attachedAsignaturasUsuariosCollectionNew = new ArrayList<AsignaturasUsuarios>();
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach : asignaturasUsuariosCollectionNew) {
-                asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach = em.getReference(asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach.getClass(), asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach.getId());
-                attachedAsignaturasUsuariosCollectionNew.add(asignaturasUsuariosCollectionNewAsignaturasUsuariosToAttach);
-            }
-            asignaturasUsuariosCollectionNew = attachedAsignaturasUsuariosCollectionNew;
-            asignaturas.setAsignaturasUsuariosCollection(asignaturasUsuariosCollectionNew);
+            usuariosListNew = attachedUsuariosListNew;
+            asignaturas.setUsuariosList(usuariosListNew);
             asignaturas = em.merge(asignaturas);
-            for (Cursos cursosCollectionOldCursos : cursosCollectionOld) {
-                if (!cursosCollectionNew.contains(cursosCollectionOldCursos)) {
-                    cursosCollectionOldCursos.getAsignaturasCollection().remove(asignaturas);
-                    cursosCollectionOldCursos = em.merge(cursosCollectionOldCursos);
+            for (Cursos cursosListOldCursos : cursosListOld) {
+                if (!cursosListNew.contains(cursosListOldCursos)) {
+                    cursosListOldCursos.getAsignaturasList().remove(asignaturas);
+                    cursosListOldCursos = em.merge(cursosListOldCursos);
                 }
             }
-            for (Cursos cursosCollectionNewCursos : cursosCollectionNew) {
-                if (!cursosCollectionOld.contains(cursosCollectionNewCursos)) {
-                    cursosCollectionNewCursos.getAsignaturasCollection().add(asignaturas);
-                    cursosCollectionNewCursos = em.merge(cursosCollectionNewCursos);
+            for (Cursos cursosListNewCursos : cursosListNew) {
+                if (!cursosListOld.contains(cursosListNewCursos)) {
+                    cursosListNewCursos.getAsignaturasList().add(asignaturas);
+                    cursosListNewCursos = em.merge(cursosListNewCursos);
                 }
             }
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionNewAsignaturasUsuarios : asignaturasUsuariosCollectionNew) {
-                if (!asignaturasUsuariosCollectionOld.contains(asignaturasUsuariosCollectionNewAsignaturasUsuarios)) {
-                    Asignaturas oldCodAsignaturaOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios = asignaturasUsuariosCollectionNewAsignaturasUsuarios.getCodAsignatura();
-                    asignaturasUsuariosCollectionNewAsignaturasUsuarios.setCodAsignatura(asignaturas);
-                    asignaturasUsuariosCollectionNewAsignaturasUsuarios = em.merge(asignaturasUsuariosCollectionNewAsignaturasUsuarios);
-                    if (oldCodAsignaturaOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios != null && !oldCodAsignaturaOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios.equals(asignaturas)) {
-                        oldCodAsignaturaOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios.getAsignaturasUsuariosCollection().remove(asignaturasUsuariosCollectionNewAsignaturasUsuarios);
-                        oldCodAsignaturaOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios = em.merge(oldCodAsignaturaOfAsignaturasUsuariosCollectionNewAsignaturasUsuarios);
-                    }
+            for (Usuarios usuariosListOldUsuarios : usuariosListOld) {
+                if (!usuariosListNew.contains(usuariosListOldUsuarios)) {
+                    usuariosListOldUsuarios.getAsignaturasList().remove(asignaturas);
+                    usuariosListOldUsuarios = em.merge(usuariosListOldUsuarios);
+                }
+            }
+            for (Usuarios usuariosListNewUsuarios : usuariosListNew) {
+                if (!usuariosListOld.contains(usuariosListNewUsuarios)) {
+                    usuariosListNewUsuarios.getAsignaturasList().add(asignaturas);
+                    usuariosListNewUsuarios = em.merge(usuariosListNewUsuarios);
                 }
             }
             em.getTransaction().commit();
@@ -158,7 +140,7 @@ public class AsignaturasJpaController implements Serializable {
         }
     }
 
-    public void destroy(Integer id) throws IllegalOrphanException, NonexistentEntityException {
+    public void destroy(Integer id) throws NonexistentEntityException {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -170,21 +152,15 @@ public class AsignaturasJpaController implements Serializable {
             } catch (EntityNotFoundException enfe) {
                 throw new NonexistentEntityException("The asignaturas with id " + id + " no longer exists.", enfe);
             }
-            List<String> illegalOrphanMessages = null;
-            Collection<AsignaturasUsuarios> asignaturasUsuariosCollectionOrphanCheck = asignaturas.getAsignaturasUsuariosCollection();
-            for (AsignaturasUsuarios asignaturasUsuariosCollectionOrphanCheckAsignaturasUsuarios : asignaturasUsuariosCollectionOrphanCheck) {
-                if (illegalOrphanMessages == null) {
-                    illegalOrphanMessages = new ArrayList<String>();
-                }
-                illegalOrphanMessages.add("This Asignaturas (" + asignaturas + ") cannot be destroyed since the AsignaturasUsuarios " + asignaturasUsuariosCollectionOrphanCheckAsignaturasUsuarios + " in its asignaturasUsuariosCollection field has a non-nullable codAsignatura field.");
+            List<Cursos> cursosList = asignaturas.getCursosList();
+            for (Cursos cursosListCursos : cursosList) {
+                cursosListCursos.getAsignaturasList().remove(asignaturas);
+                cursosListCursos = em.merge(cursosListCursos);
             }
-            if (illegalOrphanMessages != null) {
-                throw new IllegalOrphanException(illegalOrphanMessages);
-            }
-            Collection<Cursos> cursosCollection = asignaturas.getCursosCollection();
-            for (Cursos cursosCollectionCursos : cursosCollection) {
-                cursosCollectionCursos.getAsignaturasCollection().remove(asignaturas);
-                cursosCollectionCursos = em.merge(cursosCollectionCursos);
+            List<Usuarios> usuariosList = asignaturas.getUsuariosList();
+            for (Usuarios usuariosListUsuarios : usuariosList) {
+                usuariosListUsuarios.getAsignaturasList().remove(asignaturas);
+                usuariosListUsuarios = em.merge(usuariosListUsuarios);
             }
             em.remove(asignaturas);
             em.getTransaction().commit();

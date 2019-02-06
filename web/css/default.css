@@ -9,18 +9,20 @@ html,body:not(header){
 /****Header*****/
 
 header{
-    width: 100vw;
-    text-align: center;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    align-items: center;
     border-bottom: 1px solid black;
     border-bottom-right-radius: 20px;
+    background: #ededf0;
+    padding-bottom: 10px;
 } 
 
 #banner{
-    display: inline-block;
     padding: 20px 0px 20px 200px;
     line-height: 40px;
-    margin-left: 1%;
-    background: url(../img/posibleLogo1.jpg) no-repeat left;
+    background: url(../img/posibleLogo2Orig.png) no-repeat left;
     background-size: contain;
     font-family: Cinzel;
 }
@@ -33,7 +35,7 @@ header > #banner > h2{
 
 div#banner~form{
     width: 350px;
-    margin: auto 5%;
+    margin: auto 2%;
     padding: 10px 0px;
 }
 
@@ -53,10 +55,6 @@ section,#formularioBusqueda{
 	display:inline-block;
 }
 
-#formularioBusqueda{
-	
-}
-
 #formularioBusqueda>input{
     display: block;
     width: 100%;
@@ -70,16 +68,26 @@ img#iconUsuario{
     display:block;
 }
 
+
+/********************Flexbox********/
+div.flex-box{
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    height: 100%;
+}
+
 /**********Aside*************/
 
 nav[role="navegator"]{
     border-right: 1px solid black;
+    height: 100%;
 }
 
 #lateral{
-    width: 200px;
+    min-width: 210px;
+    width: 300px;
     text-align: center;
-    display:inline-block;
     height: 100%;
 }
 
@@ -89,26 +97,22 @@ nav[role="navegator"]{
     border-bottom: 1px solid black;
 }
 
+#lateral>nav>ul>li:last-child{
+    border-bottom: none;
+}
+
+#lateral>nav>ul>li:hover{
+    background: beige;
+}
+
 /***** Main -- Articulos ******/
 
 main{
-    float:right;
-    width: 75vw; 
-    overflow:hidden;
+    width: 90vw; 
+    padding: 15px;
 }
 
-main article{
-    float:left;
-    margin-left:10px;
-    width: 20%;
-}
-
-main h1{
-    font-size: 28px;
-    font-weight: bolder;
-}
-
-/* Pruebas */
+/* Pruebas Transicions */
 
 ul ul {
     position: absolute;
@@ -138,26 +142,78 @@ ul ul>li>a{
 }
 
 nav>ul>li:hover>ul{
-    transition: all 0.5s linear 0s;
+    transition: all 0.25s linear 0s;
     left:100%;
     opacity:1; 
     z-index: 20;
 }
 
 nav>ul>li:hover>ul>li{
-    transition: all 0.5s linear 0s;
+    transition: all 0.25s linear 0s;
     border-right:1px solid black;
     border-top: 1px solid black;
     background: white;
 }
 
+nav>ul>li:hover>ul>li:hover{
+    background: beige;
+}
+
 nav>ul>li:hover>ul>li:last-child{
-    transition: all 0.5s linear 0s;
+    transition: all 0.25s linear 0s;
     border-bottom:1px solid black;
 }
 
 nav>ul>li:hover>ul>li:first-child{
-    transition: all 0.5s linear 0s;
+    transition: all 0.25s linear 0s;
     border-top:none;
 }
+ 
+/*Articulos de la consulta*/
+.resultadoConsulta{
+    width: 705px;
+    border: 1px solid #bcbaba;
+    border-radius: 4px;
+    margin: 10px;
+    padding: 10px;
+}
 
+.resultadoConsulta:hover>h2{
+    text-decoration: underline;
+}
+
+.resultadoConsulta:hover{
+    cursor: pointer;
+    border: 1px solid black;
+}
+
+.resultadoConsulta>h2{
+    font-size: 30px;
+    font-weight: bolder;
+}
+
+.resultadoConsulta>h3{
+   font-size: 18px;
+   margin: 15px 0px;
+}
+
+.resultadoConsulta>img{
+    width: 120px;
+    height: 120px;
+    border-radius: 10px;
+}
+
+#submitbutton {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+#submitbutton:hover {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    text-decoration: underline;
+    color: blue;
+}
