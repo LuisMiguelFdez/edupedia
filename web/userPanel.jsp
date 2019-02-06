@@ -10,7 +10,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title>Panel de usuario</title>
-        <jsp:include page="userPanel.VerAportaciones"/>
+        <jsp:include page="VerAportaciones"/>
     </head>
     <body>
         

@@ -248,7 +248,7 @@ public List<Articulos> articulosPorAsignatura(Integer codAsignatura) {
 
     }
 
-    public List articulosDeUnPropietario(int valor) {
+    public List articulosDeUnPropietario(Usuarios valor) {
 
         EntityManager em = getEntityManager();
         Query consulta = em.createNamedQuery("Articulos.findByPropietario");
